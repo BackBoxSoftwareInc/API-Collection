@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "f9f0d334-c368-439c-9e8b-a8737ac1ce5f",
 		"name": "BackBox External API",
-		"description": "### **BackBox External API Postman Library**\n\nLibrary Version: 1.0\n\nBackBox Version: 7.5.0.7\n\nThe intention here is to make the API more accessible by providing some structured examples that you can use to build out your automation workflows.\n\n#### **Requirements and recommendations**\n\nTo avoid having to set and call cookies it is recommended you install the Postman Interceptor browser plugin and allow Postman to share cookies with your browser. You can then login to your BackBox server web UI and grab the cookies you need before sending API calls from Postman.\n\nI would strongly recommend you use the BackBox UI to generate an API Key, and use that for authentication here. You will see the authorization at the top level is set up for API key, and all calls below that inherit those values.\n\nSet the {{bb-server}} variable to your BackBox server\n\n#### **Disclaimers and caveats!**\n\nThis is very much work in progress, please feel free to provide feedback directly to me at [tony@backbox.com](https://mailto:tony@backbox.com) for now. Once we get our community up and running we will change feedback mechanisms.\n\nPlease also refer to the Swagger documentation on your BackBox server:\n\nhttps:///rest/data/swagger-ui.html#/\n\nThe following currently available external API calls are not included in this library:\n\n1. Discovery: There are additional discovery APIs being moved to the external library which made it pointless adding these two calls for now.\n    1. addDiscoveryJob\n    2. updateDiscoveryJob\n2. getNetDBSupermacInfo: I need to better understand the use case for this\n3. getTaskJobsPageQueue: Will likely be deprecated in favour of a better call\n4. deleteReport: This appears to not be working and has been raised with engineering\n5. addAuthenticationTemplate: I need to understand the minimum requirements for this call\n    \n\nAs I find time I will work with engineering to improve the documentation for each call (complete documentation section, currently untouched).",
+		"description": "### **BackBox External API Postman Library**\n\nLibrary Version: 1.0\n\nBackBox Version: 7.5.0.7\n\nThe intention here is to make the API more accessible by providing some structured examples that you can use to build out your automation workflows.\n\n#### **Requirements and recommendations**\n\nTo avoid having to set and call cookies it is recommended you install the Postman Interceptor browser plugin and allow Postman to share cookies with your browser. You can then login to your BackBox server web UI and grab the cookies you need before sending API calls from Postman.\n\nI would strongly recommend you use the BackBox UI to generate an API Key, and use that for authentication here. You will see the authorization at the top level is set up for API key, and all calls below that inherit those values.\n\nSet the {{bb-server}} variable to your BackBox server\n\n#### **Disclaimers and caveats!**\n\nThis is very much work in progress, please feel free to provide feedback directly to me at [tony@backbox.com](https://mailto:tony@backbox.com) for now. Once we get our community up and running we will change feedback mechanisms.\n\nPlease also refer to the Swagger documentation on your BackBox server:\n\nhttps:///rest/data/swagger-ui.html#/\n\nThe following currently available external API calls are not included in this library:\n\n1. Discovery: There are additional discovery APIs being moved to the external library which made it pointless adding these two calls for now.\n    1. addDiscoveryJob\n    2. updateDiscoveryJob\n2. getNetDBSupermacInfo: I need to better understand the use case for this\n3. getTaskJobsPageQueue: Will likely be deprecated in favour of a better call\n4. deleteReport: Not working - bug raised raised with engineering\n    \n\nAs I find time I will work with engineering to improve the documentation for each call (complete documentation section, currently untouched).",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32094627"
 	},
@@ -1067,7 +1067,7 @@
 					"response": []
 				},
 				{
-					"name": "Add Auth Template (not working)",
+					"name": "Add Auth Template",
 					"protocolProfileBehavior": {
 						"disabledSystemHeaders": {
 							"accept": true,
@@ -1090,7 +1090,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"STANDARD\",\n    \"password\": \"TEST\",\n    \"site_ID\": 3,\n    \"name\": \"Choam TEST\",\n    \"user_NAME\": \"TESTuser\",\n    \"description\": \"TEST\",\n    \"extra_PASSWORD\": \"EXTRA\",\n    \"snmp_COMMUNITY\": \"snmp123\",\n    \"create_DATE\": \"\"\n    }",
+							"raw": "{\n   \"template\":{\n    \"password\": \"TEST\",\n    \"site_ID\": 3,\n    \"name\": \"Choam TEST\",\n    \"user_NAME\": \"TESTuser\",\n    \"description\": \"TEST\",\n    \"extra_PASSWORD\": \"EXTRA\",\n    \"snmp_COMMUNITY\": \"snmp123\"\n    },\n\"templateItems\": [{\n  \"itemId\": 1,\n   \"itemType\":1\n}]}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1149,7 +1149,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://majors.demo.backbox.com/rest/data/api/authenticationTemplate/11",
+							"raw": "https://majors.demo.backbox.com/rest/data/api/authenticationTemplate/12",
 							"protocol": "https",
 							"host": [
 								"majors",
@@ -1162,7 +1162,7 @@
 								"data",
 								"api",
 								"authenticationTemplate",
-								"11"
+								"12"
 							]
 						}
 					},
@@ -4793,7 +4793,7 @@
 		"apikey": [
 			{
 				"key": "value",
-				"value": "<insert API key here>",
+				"value": "<Insert API Key here>",
 				"type": "string"
 			},
 			{
@@ -4826,7 +4826,7 @@
 	"variable": [
 		{
 			"key": "bb_server",
-			"value": "<insert BB server here>"
+			"value": "<insert BackBox Server here>"
 		}
 	]
 }
