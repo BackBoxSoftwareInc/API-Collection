@@ -10,7 +10,7 @@ This is very much work in progress, please feel free to provide feedback directl
 
 Please also refer to the Swagger documentation on your BackBox server:
 
-https:///rest/data/swagger-ui.html#/
+https://{{bb-server}}/rest/data/swagger-ui.html#/
 
 The following currently available external API calls are not included in this library:
 
@@ -19,5 +19,4 @@ The following currently available external API calls are not included in this li
     2. updateDiscoveryJob
 2. getNetDBSupermacInfo: I need to better understand the use case for this
 3. getTaskJobsPageQueue: Will likely be deprecated in favour of a better call
-4. deleteReport: This appears to not be working and has been raised with engineering
-5. addAuthenticationTemplate: I need to understand the minimum requirements for this call
+4. deleteReport: Currently not working, bug raised with engineering
