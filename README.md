@@ -15,7 +15,7 @@ This is very much work in progress, please feel free to provide feedback directl
 
 Please also refer to the Swagger documentation on your BackBox server:
 
-https://{{bb-server}}/rest/data/swagger-ui.html#/
+https://bb_server/rest/data/swagger-ui.html#/
 
 The following currently available external API calls are not included in this library:
 
