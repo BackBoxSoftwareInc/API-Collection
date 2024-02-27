@@ -7,8 +7,8 @@ There are three methods of authenticating API calls:
 #### **Variables**
 * Set the {{bb-server}} variable to your BackBox server
 * Set the {{path_to_endpoint}} variable to suit your needs:
-** https://{{bb_server}}/rest/data/token/api/ if using a token
-** https://{{bb_server}}/rest/data/api/ if using cookies
+  * https://{{bb_server}}/rest/data/token/api/ if using a token
+  * https://{{bb_server}}/rest/data/api/ if using cookies
 
 
 
