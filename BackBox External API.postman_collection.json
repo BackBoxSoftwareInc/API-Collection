@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "f9f0d334-c368-439c-9e8b-a8737ac1ce5f",
 		"name": "BackBox External API",
-		"description": "### **BackBox External API Postman Library**\n\nLibrary Version: 1.0\n\nBackBox Version: 7.5.0.7\n\nThe intention here is to make the API more accessible by providing some structured examples that you can use to build out your automation workflows.\n\n#### **Requirements and recommendations**\n\nTo avoid having to set and call cookies it is recommended you install the Postman Interceptor browser plugin and allow Postman to share cookies with your browser. You can then login to your BackBox server web UI and grab the cookies you need before sending API calls from Postman.\n\nI would strongly recommend you use the BackBox UI to generate an API Key, and use that for authentication here. You will see the authorization at the top level is set up for API key, and all calls below that inherit those values.\n\nSet the {{bb-server}} variable to your BackBox server\n\n#### **Disclaimers and caveats!**\n\nThis is very much work in progress, please feel free to provide feedback directly to me at [tony@backbox.com](https://mailto:tony@backbox.com) for now. Once we get our community up and running we will change feedback mechanisms.\n\nPlease also refer to the Swagger documentation on your BackBox server:\n\nhttps:///rest/data/swagger-ui.html#/\n\nThe following currently available external API calls are not included in this library:\n\n1. Discovery: There are additional discovery APIs being moved to the external library which made it pointless adding these two calls for now.\n    1. addDiscoveryJob\n    2. updateDiscoveryJob\n2. getNetDBSupermacInfo: I need to better understand the use case for this\n3. getTaskJobsPageQueue: Will likely be deprecated in favour of a better call\n4. deleteReport: Not working - bug raised raised with engineering\n    \n\nAs I find time I will work with engineering to improve the documentation for each call (complete documentation section, currently untouched).",
+		"description": "### **BackBox External API Postman Library**\n\nLibrary Version: 1.2\n\nBackBox Version: 7.5.0.711\n\nThe intention here is to make the API more accessible by providing some structured examples that you can use to build out your automation workflows.\n\n#### **Requirements and recommendations**\n\nThere are three methods of authenticating API calls:\n\n1. Cookies. If calling the API with curl you will need to get and store cookies, see the swagger page for instruction on how to do that. When using Postman, to avoid having to set and call cookies it is recommended you install the Postman Interceptor browser plugin and allow Postman to share cookies with your browser. You can then login to your BackBox server web UI and grab the cookies you need before sending API calls from Postman.\n2. Short term API key (30 minutes) Use the \"Get Short Term API Key\" request. Note that there is currently a bug which means you'll receive a 403, but you will have an Auth: header in the response containing a key. Grab that and put it in the top level auth section of this collection.\n3. Long term API key (up to 180 days). You can only generate these through the web UI. Once you are comfortable transferring API calls from Postman into your scripting language of choice, I would recommend using the long term API key when exploring the API through Postman\n    \n\n#### Variables\n\n- Set the {{bb-server}} variable to your BackBox server\n- Set the {{path_to_endpoint}} variable to suit your needs:\n    - https://{{bb_server}}/rest/data/token/api/ if using a token\n    - https://{{bb_server}}/rest/data/api/ if using cookies\n\n#### **Disclaimers and caveats!**\n\nThis is very much work in progress, please feel free to provide feedback directly to the team at [devops@backbox.com](https://mailto:devops@backbox.com) for now. Once we get our community up and running we will change feedback mechanisms.\n\nPlease also refer to the Swagger documentation on your BackBox server:\n\nhttps:///rest/data/swagger-ui.html#/\n\nThe following currently available external API calls are not included in this library:\n\n1. Discovery: There are additional discovery APIs being moved to the external library which made it pointless adding these two calls for now.\n    1. addDiscoveryJob\n    2. updateDiscoveryJob\n2. getNetDBSupermacInfo: I need to better understand the use case for this\n3. getTaskJobsPageQueue: Will likely be deprecated in favour of a better call\n4. deleteReport: Not working - bug raised raised with engineering\n    \n\nAs I find time I will work with engineering to improve the documentation for each call (complete documentation section, currently untouched).",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32094627"
 	},
@@ -20,6 +20,41 @@
 							"protocol": "https",
 							"host": [
 								"{{bb_server}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Short Term API Key",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{bb_server}}/rest/data/token/api/login?username=apiuser&password=!h@RTa3.14",
+							"protocol": "https",
+							"host": [
+								"{{bb_server}}"
+							],
+							"path": [
+								"rest",
+								"data",
+								"token",
+								"api",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "apiuser"
+								},
+								{
+									"key": "password",
+									"value": "!h@RTa3.14"
+								}
 							]
 						}
 					},
@@ -103,16 +138,9 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/getClusterState",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}getClusterState",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"getClusterState"
+								"{{path_to_endpoint}}getClusterState"
 							]
 						}
 					},
@@ -124,16 +152,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/licenses",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}licenses",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"licenses"
+								"{{path_to_endpoint}}licenses"
 							]
 						}
 					},
@@ -154,16 +175,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/CyberArkTest",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}CyberArkTest",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"CyberArkTest"
+								"{{path_to_endpoint}}CyberArkTest"
 							]
 						}
 					},
@@ -232,17 +246,9 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/token/api/devices",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devices",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"token",
-								"api",
-								"devices"
+								"{{path_to_endpoint}}devices"
 							]
 						}
 					},
@@ -306,17 +312,12 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/device/3",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}device/4",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}device"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"device",
-								"3"
+								"4"
 							]
 						}
 					},
@@ -380,16 +381,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/devicesByIp/172.255.0.222/get",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devicesByIp/172.255.0.222/get",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}devicesByIp"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"devicesByIp",
 								"172.255.0.222",
 								"get"
 							]
@@ -455,17 +451,12 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/devicesBySite/2",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devicesBySite/6",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}devicesBySite"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"devicesBySite",
-								"2"
+								"6"
 							]
 						}
 					},
@@ -529,16 +520,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/devicesbyExternalId/132",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devicesbyExternalId/132",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}devicesbyExternalId"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"devicesbyExternalId",
 								"132"
 							]
 						}
@@ -552,7 +538,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\n      \"deviceName\": \"Cisco C8000\",\n      \"siteId\": 0,\n      \"host\": \"10.0.68.248\",\n      \"vendorId\": -5,\n      \"productId\": -56,\n      \"versionId\": -97,\n      \"optionId\": -9000314,\n      \"groupId\": 0,\n      \"retentionId\": 0,\n      \"port\": 22,\n      \"debugMode\": false,\n      \"authenticationType\": \"1\",\n      \"authenticationTemplateIds\": null,\n      \"userName\": \"admin\",\n      \"password\": \"admin\",\n      \"su\": \"\",\n      \"suPassword\": \"admin\",\n      \"prompt\": null,\n      \"commandUserName\": \"\",\n      \"commandPassword\": \"safeway_blank\",\n      \"snmpCommunity\": \"safeway_blank\",\n      \"snmpVersion\": \"\",\n      \"serverIp\": null,\n      \"agentId\": 0,\n      \"backupSizeDeviation\": false,\n      \"natHost\": \"\",\n      \"description\": null,\n      \"backupSizeDeviationPercentage\": null,\n      \"externalId\": \"FD12345\",\n      \"enableAccess\": true,\n      \"inMaintenanceMode\": false,\n      \"enableIntelliChecks\": true,\n      \"collected\": true,\n      \"compareExceptions\": null\n    }\n",
+							"raw": "    {\n      \"deviceName\": \"testy mctest\",\n      \"siteId\": 0,\n      \"host\": \"5.6.7.8\",\n      \"vendorId\": -5,\n      \"productId\": -56,\n      \"versionId\": -97,\n      \"optionId\": -9000314,\n      \"groupId\": 0,\n      \"retentionId\": 0,\n      \"port\": 22,\n      \"debugMode\": false,\n      \"authenticationType\": \"1\",\n      \"authenticationTemplateIds\": null,\n      \"userName\": \"admin\",\n      \"password\": \"admin\",\n      \"su\": \"\",\n      \"suPassword\": \"admin\",\n      \"prompt\": null,\n      \"commandUserName\": \"\",\n      \"commandPassword\": \"safeway_blank\",\n      \"snmpCommunity\": \"safeway_blank\",\n      \"snmpVersion\": \"\",\n      \"serverIp\": null,\n      \"agentId\": 0,\n      \"backupSizeDeviation\": false,\n      \"natHost\": \"\",\n      \"description\": null,\n      \"backupSizeDeviationPercentage\": null,\n      \"externalId\": \"FD12345\",\n      \"enableAccess\": true,\n      \"inMaintenanceMode\": false,\n      \"enableIntelliChecks\": true,\n      \"collected\": true,\n      \"compareExceptions\": null\n    }\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -560,46 +546,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/device",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}device",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"device"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Device",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"deviceName\": \"bb-aws-pan-01\",\n    \"siteId\": 0,\n    \"host\": \"172.31.41.113\",\n    \"vendorId\": -48,\n    \"productId\": -113,\n    \"versionId\": -455,\n    \"optionId\": -9000082,\n    \"groupId\": 0,\n    \"retentionId\": 0,\n    \"port\": 22,\n    \"debugMode\": false,\n    \"authenticationType\": \"1\",\n    \"authenticationTemplateIds\": [],\n    \"userName\": \"admin\",\n    \"password\": \"safeway_blank\",\n    \"su\": \"\",\n    \"suPassword\": \"safeway_blank\",\n    \"prompt\": null,\n    \"commandUserName\": \"\",\n    \"commandPassword\": \"safeway_blank\",\n    \"snmpCommunity\": \"safeway_blank\",\n    \"snmpVersion\": \"\",\n    \"serverIp\": null,\n    \"agentId\": 0,\n    \"backupSizeDeviation\": true,\n    \"natHost\": \"\",\n    \"description\": \"\",\n    \"backupSizeDeviationPercentage\": null,\n    \"externalId\": null,\n    \"enableAccess\": true,\n    \"inMaintenanceMode\": false,\n    \"enableIntelliChecks\": true,\n    \"collected\": true,\n    \"compareExceptions\": null,\n    \"notes\": null,\n    \"deviceAccessDetails\": {\n        \"connectionType\": \"SSH\",\n        \"port\": 22,\n        \"overridePort\": false,\n        \"securityProtocol\": \"NONE\",\n        \"localAdmin\": false,\n        \"urlPostfix\": \"/\",\n        \"webBrowser\": null\n    },\n    \"deviceId\": 47,\n    \"notesId\": 0,\n    \"groupName\": null,\n    \"vendorName\": \"Palo Alto Networks\",\n    \"productName\": \"PA Series\",\n    \"versionName\": \"Version 4 and above\",\n    \"siteName\": \"Global\",\n    \"optionName\": \"cURL (Device-State)\",\n    \"productType\": null,\n    \"productTypeName\": null,\n    \"lastBackupDate\": 1702652976000,\n    \"lastBackupDateToShow\": \"2023-12-15 15:09:36.0 GMT\",\n    \"lastBackupId\": 252219,\n    \"retention\": null,\n    \"agentName\": null,\n    \"backupCustomField1\": \"\",\n    \"backupCustomField2\": \"\",\n    \"intelliChecksStatus\": \"complex\",\n    \"agentGroupId\": 0,\n    \"deviceCustomFields\": {},\n    \"optionCustomFields\": {},\n    \"lastSuccessfulBackupDate\": null,\n    \"configurationChanged\": \"no\",\n    \"discoverySnmpRespond\": false,\n    \"backupSize\": null,\n    \"failureReason\": null,\n    \"backupFailureRetry\": 0,\n    \"backupFailureRetrySleepTime\": 0,\n    \"cloudVault\": null,\n    \"technicalSurveyItems\": null\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/device",
-							"protocol": "https",
-							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"device"
+								"{{path_to_endpoint}}device"
 							]
 						}
 					},
@@ -611,17 +560,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/runDevice/3",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}runDevice/4",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}runDevice"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"runDevice",
-								"3"
+								"4"
 							]
 						}
 					},
@@ -634,7 +578,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    4,\n    6\n]",
+							"raw": "[\n    3,\n    6\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -642,16 +586,32 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/runDevices",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}runDevices",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"runDevices"
+								"{{path_to_endpoint}}runDevices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Device",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"deviceName\": \"update\",\n    \"siteId\": 6,\n    \"host\": \"13.53.143.168\",\n    \"vendorId\": -48,\n    \"productId\": -318,\n    \"versionId\": -456,\n    \"optionId\": -9000394,\n    \"groupId\": 0,\n    \"retentionId\": 0,\n    \"port\": 22,\n    \"debugMode\": false,\n    \"authenticationType\": null,\n    \"authenticationTemplateIds\": [],\n    \"userName\": null,\n    \"password\": \"safeway_blank\",\n    \"su\": null,\n    \"suPassword\": \"safeway_blank\",\n    \"prompt\": null,\n    \"commandUserName\": \"\",\n    \"commandPassword\": \"safeway_blank\",\n    \"snmpCommunity\": \"safeway_blank\",\n    \"snmpVersion\": \"\",\n    \"serverIp\": null,\n    \"agentId\": 0,\n    \"backupSizeDeviation\": false,\n    \"natHost\": \"\",\n    \"description\": null,\n    \"backupSizeDeviationPercentage\": null,\n    \"externalId\": \"HCA1\",\n    \"enableAccess\": false,\n    \"inMaintenanceMode\": false,\n    \"enableIntelliChecks\": false,\n    \"collected\": false,\n    \"compareExceptions\": null,\n    \"notes\": null,\n    \"deviceAccessDetails\": {\n        \"connectionType\": \"SSH\",\n        \"port\": 22,\n        \"overridePort\": false,\n        \"securityProtocol\": \"NONE\",\n        \"localAdmin\": false,\n        \"urlPostfix\": \"/\",\n        \"webBrowser\": null\n    },\n    \"deviceId\": 188,\n    \"notesId\": 0,\n    \"groupName\": null,\n    \"vendorName\": \"Palo Alto Networks\",\n    \"productName\": \"Panorama\",\n    \"versionName\": \"Version 4 and above\",\n    \"siteName\": \"HCA\",\n    \"optionName\": \"cURL + SSH (With Logs)\",\n    \"productType\": null,\n    \"productTypeName\": null,\n    \"lastBackupDate\": 63090000000,\n    \"lastBackupDateToShow\": \"1972-01-01 05:00:00.0 GMT\",\n    \"lastBackupId\": 0,\n    \"retention\": null,\n    \"agentName\": null,\n    \"backupCustomField1\": \"\",\n    \"backupCustomField2\": \"\",\n    \"intelliChecksStatus\": \"complex\",\n    \"agentGroupId\": 0,\n    \"deviceCustomFields\": {},\n    \"optionCustomFields\": {},\n    \"lastSuccessfulBackupDate\": null,\n    \"configurationChanged\": \"no\",\n    \"discoverySnmpRespond\": false,\n    \"backupSize\": null,\n    \"failureReason\": null,\n    \"backupFailureRetry\": 0,\n    \"backupFailureRetrySleepTime\": 0,\n    \"cloudVault\": null,\n    \"technicalSurveyItems\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{path_to_endpoint}}device",
+							"host": [
+								"{{path_to_endpoint}}device"
 							]
 						}
 					},
@@ -732,16 +692,11 @@
 							]
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/devices/groups/getDeviceGroupsList",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devices/groups/getDeviceGroupsList",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}devices"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"devices",
 								"groups",
 								"getDeviceGroupsList"
 							]
@@ -807,19 +762,14 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/devices/groups/getDevicesInGroup/3",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devices/groups/getDevicesInGroup/5",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}devices"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"devices",
 								"groups",
 								"getDevicesInGroup",
-								"3"
+								"5"
 							]
 						}
 					},
@@ -842,25 +792,20 @@
 							},
 							{
 								"key": "Accept",
-								"value": "application/json",
+								"value": "*/*",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"description\": \"testGroup2\",\n  \"deviceList\": \"\",\n  \"group_NAME\": \"testGroup2\",\n  \"site_ID\": 0\n}"
+							"raw": "{\n  \"description\": \"testy\",\n  \"deviceList\": [179,180],\n  \"group_NAME\": \"testy\",\n  \"site_ID\": 6\n}"
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/devices/groups/addDeviceGroup",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devices/groups/addDeviceGroup",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}devices"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"devices",
 								"groups",
 								"addDeviceGroup"
 							]
@@ -875,7 +820,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    3,\n    35\n]\n",
+							"raw": "[\n    180,\n    181,\n    182\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -883,20 +828,15 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/devices/groups/addDevicesToGroup/groupId/3",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devices/groups/addDevicesToGroup/groupId/19",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}devices"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"devices",
 								"groups",
 								"addDevicesToGroup",
 								"groupId",
-								"3"
+								"19"
 							]
 						}
 					},
@@ -908,20 +848,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/devices/groups/deleteDeviceGroup/groupId/4",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devices/groups/deleteDeviceGroup/groupId/14",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}devices"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"devices",
 								"groups",
 								"deleteDeviceGroup",
 								"groupId",
-								"4"
+								"14"
 							]
 						}
 					},
@@ -942,16 +877,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/devices/groups/removeDevicesFromGroup/",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}devices/groups/removeDevicesFromGroup/",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}devices"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"devices",
 								"groups",
 								"removeDevicesFromGroup",
 								""
@@ -982,17 +912,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/token/api/authenticationTemplates/size",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}authenticationTemplates/size",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}authenticationTemplates"
 							],
 							"path": [
-								"rest",
-								"data",
-								"token",
-								"api",
-								"authenticationTemplates",
 								"size"
 							]
 						}
@@ -1016,17 +940,9 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/token/api/authenticationTemplates",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}authenticationTemplates",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"token",
-								"api",
-								"authenticationTemplates"
+								"{{path_to_endpoint}}authenticationTemplates"
 							]
 						}
 					},
@@ -1049,17 +965,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/token/api/authenticationTemplate/7",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}authenticationTemplate/7",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}authenticationTemplate"
 							],
 							"path": [
-								"rest",
-								"data",
-								"token",
-								"api",
-								"authenticationTemplate",
 								"7"
 							]
 						}
@@ -1098,16 +1008,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/authenticationTemplate",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}authenticationTemplate",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"authenticationTemplate"
+								"{{path_to_endpoint}}authenticationTemplate"
 							]
 						}
 					},
@@ -1120,7 +1023,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"STANDARD\",\n    \"appId\": \"BackBox\",\n    \"passwordSafe\": \"\",\n    \"passwordFolder\": \"\",\n    \"passwordObject\": \"\",\n    \"extraPasswordSafe\": \"\",\n    \"extraPasswordFolder\": \"\",\n    \"extraPasswordObject\": \"\",\n    \"wallixAccoutType\": \"DEVICE\",\n    \"wallixApiUsername\": \"\",\n    \"wallixApiKey\": \"\",\n    \"wallixDomain\": \"\",\n    \"wallixAccount\": \"\",\n    \"wallixApplication\": \"\",\n    \"wallixExtraAccoutType\": \"DEVICE\",\n    \"wallixExtraDomain\": \"\",\n    \"wallixExtraAccount\": \"\",\n    \"wallixExtraApplication\": \"\",\n    \"arconTargetType\": \"\",\n    \"arconExtraTargetType\": \"\",\n    \"apiUsername\": \"\",\n    \"apiPassword\": \"\",\n    \"apiExtraUsername\": \"\",\n    \"password\": \"safeway_blank\",\n    \"site_ID\": 3,\n    \"name\": \"Choam Cisco\",\n    \"site_NAME\": \"Global\",\n    \"user_NAME\": \"admin\",\n    \"description\": \"Adding description\",\n    \"create_DATE\": \"2023-11-21\",\n    \"extra_PASSWORD\": \"safeway_blank\",\n    \"in_USE\": 0,\n    \"snmp_COMMUNITY\": \"safeway_blank\",\n    \"modify_DATE\": \"2023-11-21\",\n    \"id\": 7\n}",
+							"raw": "{\n    \"type\": \"STANDARD\",\n    \"appId\": \"BackBox\",\n    \"passwordSafe\": \"\",\n    \"passwordFolder\": \"\",\n    \"passwordObject\": \"\",\n    \"extraPasswordSafe\": \"\",\n    \"extraPasswordFolder\": \"\",\n    \"extraPasswordObject\": \"\",\n    \"wallixAccoutType\": \"DEVICE\",\n    \"wallixApiUsername\": \"\",\n    \"wallixApiKey\": \"\",\n    \"wallixDomain\": \"\",\n    \"wallixAccount\": \"\",\n    \"wallixApplication\": \"\",\n    \"wallixExtraAccoutType\": \"DEVICE\",\n    \"wallixExtraDomain\": \"\",\n    \"wallixExtraAccount\": \"\",\n    \"wallixExtraApplication\": \"\",\n    \"arconTargetType\": \"\",\n    \"arconExtraTargetType\": \"\",\n    \"apiUsername\": \"\",\n    \"apiPassword\": \"\",\n    \"apiExtraUsername\": \"\",\n    \"password\": \"safeway_blank\",\n    \"site_ID\": 3,\n    \"name\": \"Choam Cisco\",\n    \"site_NAME\": \"Global\",\n    \"user_NAME\": \"admin\",\n    \"description\": \"\",\n    \"create_DATE\": \"2023-11-21\",\n    \"extra_PASSWORD\": \"safeway_blank\",\n    \"in_USE\": 0,\n    \"snmp_COMMUNITY\": \"safeway_blank\",\n    \"modify_DATE\": \"2023-11-21\",\n    \"id\": 7\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1128,16 +1031,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/authenticationTemplate",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}authenticationTemplate",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"authenticationTemplate"
+								"{{path_to_endpoint}}authenticationTemplate"
 							]
 						}
 					},
@@ -1149,20 +1045,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://majors.demo.backbox.com/rest/data/api/authenticationTemplate/12",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}authenticationTemplate/9",
 							"host": [
-								"majors",
-								"demo",
-								"backbox",
-								"com"
+								"{{path_to_endpoint}}authenticationTemplate"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"authenticationTemplate",
-								"12"
+								"9"
 							]
 						}
 					},
@@ -1174,16 +1062,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/getAllAuthenticationTemplatesBySite/3",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}getAllAuthenticationTemplatesBySite/3",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}getAllAuthenticationTemplatesBySite"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"getAllAuthenticationTemplatesBySite",
 								"3"
 							]
 						}
@@ -1201,16 +1084,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/sites/size",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}sites/size",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}sites"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"sites",
 								"size"
 							]
 						}
@@ -1223,16 +1101,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/sites",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}sites",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"sites"
+								"{{path_to_endpoint}}sites"
 							]
 						}
 					},
@@ -1244,16 +1115,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/site/5",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}site/5",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}site"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"site",
 								"5"
 							]
 						}
@@ -1275,16 +1141,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/site",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}site",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"site"
+								"{{path_to_endpoint}}site"
 							]
 						}
 					},
@@ -1297,7 +1156,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": 6,\n    \"name\": \"Test Site2\",\n    \"contactName\": \"\",\n    \"contactPhone\": \"\",\n    \"contactMail\": \"\",\n    \"contactAddress\": \"\",\n    \"contactNotes\": \"\",\n    \"numOfDevices\": 0,\n    \"numOfUsers\": 0,\n    \"backupsSimpleAllowed\": 0,\n    \"backupsComplexAllowed\": 0,\n    \"accessAllowed\": 0,\n    \"backupsSimpleUsed\": 0,\n    \"backupsComplexUsed\": 0,\n    \"intelliChecksSimpleAllowed\": 0,\n    \"intelliChecksComplexAllowed\": 0,\n    \"intelliChecksSimpleUsed\": 0,\n    \"intelliChecksComplexUsed\": 0,\n    \"accessUsed\": 0,\n    \"retentionId\": 0,\n    \"retention\": null,\n    \"backupSizeDeviationPercentage\": null,\n    \"useCustomLogo\": false,\n    \"accessRules\": []\n}",
+							"raw": "{\n    \"id\": 7,\n    \"name\": \"Test Site4\",\n    \"contactName\": \"\",\n    \"contactPhone\": \"\",\n    \"contactMail\": \"\",\n    \"contactAddress\": \"\",\n    \"contactNotes\": \"\",\n    \"numOfDevices\": 0,\n    \"numOfUsers\": 0,\n    \"backupsSimpleAllowed\": 0,\n    \"backupsComplexAllowed\": 0,\n    \"accessAllowed\": 0,\n    \"backupsSimpleUsed\": 0,\n    \"backupsComplexUsed\": 0,\n    \"intelliChecksSimpleAllowed\": 0,\n    \"intelliChecksComplexAllowed\": 0,\n    \"intelliChecksSimpleUsed\": 0,\n    \"intelliChecksComplexUsed\": 0,\n    \"accessUsed\": 0,\n    \"retentionId\": 0,\n    \"retention\": null,\n    \"backupSizeDeviationPercentage\": null,\n    \"useCustomLogo\": false,\n    \"accessRules\": []\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1305,16 +1164,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/site",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}site",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"site"
+								"{{path_to_endpoint}}site"
 							]
 						}
 					},
@@ -1326,17 +1178,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/site/6",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}site/7",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}site"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"site",
-								"6"
+								"7"
 							]
 						}
 					},
@@ -1353,16 +1200,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/backupStatus?filter=byType",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/backupStatus?filter=byType",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"backupStatus"
 							],
 							"query": [
@@ -1381,16 +1223,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/backupStatus?filter=bySite",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/backupStatus?filter=bySite",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"backupStatus"
 							],
 							"query": [
@@ -1409,16 +1246,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/backupStatus?filter=byGroup",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/backupStatus?filter=byGroup",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"backupStatus"
 							],
 							"query": [
@@ -1437,16 +1269,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/configStatus/{filterType}?filterType=previous",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/configStatus/{filterType}?filterType=previous",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"configStatus",
 								"{filterType}"
 							],
@@ -1466,16 +1293,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/configStatus/{filterType}?filterType=baseline",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/configStatus/{filterType}?filterType=baseline",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"configStatus",
 								"{filterType}"
 							],
@@ -1495,16 +1317,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/configStatus/{filterType}?filterType=startup",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/configStatus/{filterType}?filterType=startup",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"configStatus",
 								"{filterType}"
 							],
@@ -1535,16 +1352,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/history?modifyDate=1706061602000",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/history?modifyDate=1706061602000",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"history"
 							],
 							"query": [
@@ -1563,23 +1375,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://majors.demo.backbox.com/rest/data/api/backups/jobs/getDevices/backupJobId/46",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/jobs/getDevices/backupJobId/54",
 							"host": [
-								"majors",
-								"demo",
-								"backbox",
-								"com"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"jobs",
 								"getDevices",
 								"backupJobId",
-								"46"
+								"54"
 							]
 						}
 					},
@@ -1592,7 +1396,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    863,\n    132\n]",
+							"raw": "[\n    \"HCA9\",\n    \"FD12345\"\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1600,23 +1404,15 @@
 							}
 						},
 						"url": {
-							"raw": "https://majors.demo.backbox.com/rest/data/api/backups/jobs/addDevicesByExternalIds/backupJobId/51",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/jobs/addDevicesByExternalIds/backupJobId/54",
 							"host": [
-								"majors",
-								"demo",
-								"backbox",
-								"com"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"jobs",
 								"addDevicesByExternalIds",
 								"backupJobId",
-								"51"
+								"54"
 							]
 						}
 					},
@@ -1646,26 +1442,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    3,\n    6\n]"
+							"raw": "[\n    187,\n    188\n]"
 						},
 						"url": {
-							"raw": "https://majors.demo.backbox.com/rest/data/api/backups/jobs/addDevicesByIds/backupJobId/51",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/jobs/addDevicesByIds/backupJobId/54",
 							"host": [
-								"majors",
-								"demo",
-								"backbox",
-								"com"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"jobs",
 								"addDevicesByIds",
 								"backupJobId",
-								"51"
+								"54"
 							]
 						}
 					},
@@ -1678,7 +1466,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    \"172.255.0.87\",\n    \"172.255.0.222\"\n]",
+							"raw": "[\n    \"13.53.107.14\",\n    \"13.48.119.28\"\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1686,20 +1474,15 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/jobs/addDevicesByIps/backupJobId/51",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/jobs/addDevicesByIps/backupJobId/54",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"jobs",
 								"addDevicesByIps",
 								"backupJobId",
-								"51"
+								"54"
 							]
 						}
 					},
@@ -1712,7 +1495,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    863,\n    132\n]",
+							"raw": "[\n    \"HCA9\",\n    \"FD12345\"\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1720,20 +1503,15 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/jobs/deleteDevicesByExternalIds/backupJobId/51",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/jobs/deleteDevicesByExternalIds/backupJobId/54",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"jobs",
 								"deleteDevicesByExternalIds",
 								"backupJobId",
-								"51"
+								"54"
 							]
 						}
 					},
@@ -1746,7 +1524,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    3,\n    6\n]",
+							"raw": "[\n    187,\n    188\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1754,20 +1532,15 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/jobs/deleteDevicesByIds/backupJobId/51",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/jobs/deleteDevicesByIds/backupJobId/54",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"jobs",
 								"deleteDevicesByIds",
 								"backupJobId",
-								"51"
+								"54"
 							]
 						}
 					},
@@ -1780,7 +1553,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    \"172.255.0.87\",\n    \"172.255.0.222\"\n]",
+							"raw": "[\n    \"172.255.0.87\",\n    \"13.48.119.28\"\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1788,20 +1561,15 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/jobs/deleteDevicesByIps/backupJobId/51",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/jobs/deleteDevicesByIps/backupJobId/54",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"jobs",
 								"deleteDevicesByIps",
 								"backupJobId",
-								"51"
+								"54"
 							]
 						}
 					},
@@ -1813,17 +1581,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/job/46",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}job/54",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}job"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"job",
-								"46"
+								"54"
 							]
 						}
 					},
@@ -1835,16 +1598,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/jobs",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}jobs",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"jobs"
+								"{{path_to_endpoint}}jobs"
 							]
 						}
 					},
@@ -1857,7 +1613,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"scheduleIds\": [],\n    \"itemsIN_BackupJob\": [\n        {\n            \"siteId\": 3,\n            \"jobId\": 51,\n            \"itemId\": 3,\n            \"itemType\": 0,\n            \"itemName\": \"bb-aws-csc-01\",\n            \"itemHost\": \"172.255.0.14\",\n            \"groupId\": 0,\n            \"vendorName\": \"Cisco Systems Inc\",\n            \"productName\": \"Router\",\n            \"siteName\": \"Choam\",\n            \"itemProductType\": \"simple\",\n            \"groupName\": \"testy\",\n            \"port\": 0,\n            \"itemDescription\": null,\n            \"configurationChanged\": false,\n            \"externalId\": \"863\",\n            \"inventoryModel\": \"Model/Memory: cisco C8000V (VXE) processor (revision VXE) with 2257251K/3075K bytes of memory.\\n\",\n            \"inventoryVersion\": \"IOS Version: Cisco IOS XE Software, Version 17.06.05\\n\"\n        },\n        {\n            \"siteId\": 4,\n            \"jobId\": 51,\n            \"itemId\": 6,\n            \"itemType\": 0,\n            \"itemName\": \"bb-aws-asa-01\",\n            \"itemHost\": \"172.255.0.87\",\n            \"groupId\": 0,\n            \"vendorName\": \"Cisco Systems Inc\",\n            \"productName\": \"ASA\",\n            \"siteName\": \"Cyberdyne Systems\",\n            \"itemProductType\": \"complex\",\n            \"groupName\": null,\n            \"port\": 0,\n            \"itemDescription\": null,\n            \"configurationChanged\": false,\n            \"externalId\": \"1472\",\n            \"inventoryModel\": \"Hardware Model: ASAv\\n\",\n            \"inventoryVersion\": \"Software Version: Cisco Adaptive Security Appliance Software Version 9.19(1)\\n\"\n        },\n        {\n            \"siteId\": 3,\n            \"jobId\": 51,\n            \"itemId\": 9,\n            \"itemType\": 0,\n            \"itemName\": \"bb-aws-bip-01\",\n            \"itemHost\": \"172.255.0.222\",\n            \"groupId\": 0,\n            \"vendorName\": \"F5\",\n            \"productName\": \"BigIP Series\",\n            \"siteName\": \"Choam\",\n            \"itemProductType\": \"complex\",\n            \"groupName\": \"testy\",\n            \"port\": 0,\n            \"itemDescription\": null,\n            \"configurationChanged\": false,\n            \"externalId\": \"132\",\n            \"inventoryModel\": \"Model: BIG-IP Virtual Edition\\n\",\n            \"inventoryVersion\": \"Version: 14.1.5.3\\n\"\n        }\n    ],\n    \"type\": \"BACKUP\",\n    \"amountOfDevices\": 0,\n    \"tasksInTaskJob\": [],\n    \"sendDiffFilesInNotification\": false,\n    \"showExcludedLines\": false,\n    \"scheduleNames\": [],\n    \"nextExecutionDate\": null,\n    \"notificationName\": null,\n    \"lastStatus\": null,\n    \"runMode\": \"parallel\",\n    \"exhaustMode\": \"devicesOnTask\",\n    \"abortRunOnError\": true,\n    \"attachedTaskJobId\": null,\n    \"attachedStatusId\": \"ALL\",\n    \"disabledTaskJob\": false,\n    \"approvalsList\": null,\n    \"ownerId\": 0,\n    \"ownerName\": null,\n    \"site_ID\": 0,\n    \"name\": \"test\",\n    \"site_NAME\": null,\n    \"description\": \"testing job update by api\",\n    \"notification_ID\": 0,\n    \"disposable\": false,\n    \"backup_JOB_ID\": 51,\n    \"showUnavailableInNotification\": false,\n    \"groupName\": null,\n    \"excludedFromCollectionOnOutput\": false,\n    \"inGroup\": false\n}",
+							"raw": "{\n    \"scheduleIds\": [],\n    \"itemsIN_BackupJob\": [\n        {\n            \"siteId\": 3,\n            \"jobId\": 54,\n            \"itemId\": 3,\n            \"itemType\": 0,\n            \"itemName\": \"bb-aws-csc-01\",\n            \"itemHost\": \"172.255.0.14\",\n            \"groupId\": 0,\n            \"vendorName\": \"Cisco Systems Inc\",\n            \"productName\": \"Router\",\n            \"siteName\": \"Choam\",\n            \"itemProductType\": \"simple\",\n            \"groupName\": \"Ivanti Devices\",\n            \"port\": 0,\n            \"itemDescription\": null,\n            \"configurationChanged\": false,\n            \"externalId\": \"863\",\n            \"inventoryModel\": \"Model/Memory: cisco C8000V (VXE) processor (revision VXE) with 2257251K/3075K bytes of memory.\\n\",\n            \"inventoryVersion\": \"IOS Version: Cisco IOS XE Software, Version 17.06.05\\n\"\n        },\n        {\n            \"siteId\": 4,\n            \"jobId\": 54,\n            \"itemId\": 6,\n            \"itemType\": 0,\n            \"itemName\": \"bb-aws-asa-01\",\n            \"itemHost\": \"172.255.0.87\",\n            \"groupId\": 0,\n            \"vendorName\": \"Cisco Systems Inc\",\n            \"productName\": \"ASA\",\n            \"siteName\": \"Cyberdyne Systems\",\n            \"itemProductType\": \"complex\",\n            \"groupName\": \"Cisco Devices\",\n            \"port\": 0,\n            \"itemDescription\": null,\n            \"configurationChanged\": false,\n            \"externalId\": \"1472\",\n            \"inventoryModel\": \"Hardware Model: ASAv\\n\",\n            \"inventoryVersion\": \"Software Version: Cisco Adaptive Security Appliance Software Version 9.19(1)\\n\"\n        },\n        {\n            \"siteId\": 3,\n            \"jobId\": 54,\n            \"itemId\": 9,\n            \"itemType\": 0,\n            \"itemName\": \"bb-aws-bip-01\",\n            \"itemHost\": \"172.255.0.222\",\n            \"groupId\": 0,\n            \"vendorName\": \"F5\",\n            \"productName\": \"BigIP Series\",\n            \"siteName\": \"Choam\",\n            \"itemProductType\": \"complex\",\n            \"groupName\": \"F5 Devices\",\n            \"port\": 0,\n            \"itemDescription\": null,\n            \"configurationChanged\": false,\n            \"externalId\": \"132\",\n            \"inventoryModel\": \"Model: BIG-IP Virtual Edition\\n\",\n            \"inventoryVersion\": \"Version: 14.1.5.3\\n\"\n        }\n    ],\n    \"type\": \"BACKUP\",\n    \"amountOfDevices\": 0,\n    \"tasksInTaskJob\": [],\n    \"sendDiffFilesInNotification\": false,\n    \"showExcludedLines\": false,\n    \"scheduleNames\": [],\n    \"nextExecutionDate\": null,\n    \"notificationName\": null,\n    \"lastStatus\": null,\n    \"runMode\": \"parallel\",\n    \"exhaustMode\": \"devicesOnTask\",\n    \"abortRunOnError\": true,\n    \"attachedTaskJobId\": null,\n    \"attachedStatusId\": \"ALL\",\n    \"disabledTaskJob\": false,\n    \"approvalsList\": null,\n    \"ownerId\": 0,\n    \"ownerName\": null,\n    \"site_ID\": 0,\n    \"name\": \"test\",\n    \"site_NAME\": null,\n    \"notification_ID\": 0,\n    \"description\": \"testing job update by api\",\n    \"disposable\": false,\n    \"backup_JOB_ID\": 54,\n    \"groupName\": null,\n    \"showUnavailableInNotification\": false,\n    \"excludedFromCollectionOnOutput\": false,\n    \"inGroup\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1865,16 +1621,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/job",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}job",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"job"
+								"{{path_to_endpoint}}job"
 							]
 						}
 					},
@@ -1895,16 +1644,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/job",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}job",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"job"
+								"{{path_to_endpoint}}job"
 							]
 						}
 					},
@@ -1916,18 +1658,13 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/job/run/51",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}job/run/54",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}job"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"job",
 								"run",
-								"51"
+								"54"
 							]
 						}
 					},
@@ -1939,19 +1676,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/job/status/backup/51",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}job/status/backup/54",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}job"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"job",
 								"status",
 								"backup",
-								"51"
+								"54"
 							]
 						}
 					},
@@ -1963,17 +1695,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/job/52",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}job/54",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}job"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"job",
-								"52"
+								"54"
 							]
 						}
 					},
@@ -1985,16 +1712,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/jobs/allJobsBySite/2",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}jobs/allJobsBySite/2",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}jobs"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"jobs",
 								"allJobsBySite",
 								"2"
 							]
@@ -2008,16 +1730,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/jobs/allScheduleJobs",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}jobs/allScheduleJobs",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}jobs"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"jobs",
 								"allScheduleJobs"
 							]
 						}
@@ -2039,16 +1756,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/jobs/run",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}jobs/run",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}jobs"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"jobs",
 								"run"
 							]
 						}
@@ -2061,16 +1773,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/downloadLog/link/257379",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/downloadLog/link/257379",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"downloadLog",
 								"link",
 								"257379"
@@ -2085,16 +1792,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/downloadLog/257379",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/downloadLog/257379",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"downloadLog",
 								"257379"
 							]
@@ -2108,16 +1810,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/download/link/257379/ifconfig.txt.enc",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/download/link/257379/ifconfig.txt.enc",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"download",
 								"link",
 								"257379",
@@ -2133,16 +1830,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/download/257379/ifconfig.txt.enc",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/download/257379/ifconfig.txt.enc",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"download",
 								"257379",
 								"ifconfig.txt.enc"
@@ -2214,16 +1906,9 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks"
+								"{{path_to_endpoint}}tasks"
 							]
 						}
 					},
@@ -2235,16 +1920,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/task/63",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}task/63",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}task"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"task",
 								"63"
 							]
 						}
@@ -2266,16 +1946,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/task",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}task",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"task"
+								"{{path_to_endpoint}}task"
 							]
 						}
 					},
@@ -2296,16 +1969,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/task",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}task",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"task"
+								"{{path_to_endpoint}}task"
 							]
 						}
 					},
@@ -2317,16 +1983,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/task/64",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}task/64",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}task"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"task",
 								"64"
 							]
 						}
@@ -2339,16 +2000,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/history",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/history",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"history"
 							]
 						}
@@ -2413,16 +2069,9 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/taskJobs",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}taskJobs",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"taskJobs"
+								"{{path_to_endpoint}}taskJobs"
 							]
 						}
 					},
@@ -2486,16 +2135,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/taskJob/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}taskJob/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}taskJob"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"taskJob",
 								"49"
 							]
 						}
@@ -2560,16 +2204,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/job/run/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/job/run/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"job",
 								"run",
 								"49"
@@ -2593,16 +2232,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/taskJob",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}taskJob",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"taskJob"
+								"{{path_to_endpoint}}taskJob"
 							]
 						}
 					},
@@ -2623,16 +2255,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/taskJob",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}taskJob",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"taskJob"
+								"{{path_to_endpoint}}taskJob"
 							]
 						}
 					},
@@ -2644,16 +2269,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/taskJob/54",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}taskJob/54",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}taskJob"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"taskJob",
 								"54"
 							]
 						}
@@ -2666,16 +2286,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/taskJobs/allJobsBySite/3",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}taskJobs/allJobsBySite/3",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}taskJobs"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"taskJobs",
 								"allJobsBySite",
 								"3"
 							]
@@ -2689,16 +2304,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/taskJobs/allScheduleJobs",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}taskJobs/allScheduleJobs",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}taskJobs"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"taskJobs",
 								"allScheduleJobs"
 							]
 						}
@@ -2720,16 +2330,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/addDeviceGroupsByIds/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/addDeviceGroupsByIds/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"addDeviceGroupsByIds",
 								"taskJobId",
@@ -2754,16 +2359,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/deleteDeviceGroupsByIds/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/deleteDeviceGroupsByIds/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"deleteDeviceGroupsByIds",
 								"taskJobId",
@@ -2788,16 +2388,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/addDeviceGroupsByNames/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/addDeviceGroupsByNames/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"addDeviceGroupsByNames",
 								"taskJobId",
@@ -2822,16 +2417,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/deleteDeviceGroupsByNames/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/deleteDeviceGroupsByNames/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"deleteDeviceGroupsByNames",
 								"taskJobId",
@@ -2856,16 +2446,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/addDevicesByExternalIds/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/addDevicesByExternalIds/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"addDevicesByExternalIds",
 								"taskJobId",
@@ -2890,16 +2475,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/deleteDevicesByExternalIds/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/deleteDevicesByExternalIds/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"deleteDevicesByExternalIds",
 								"taskJobId",
@@ -2924,16 +2504,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/addDevicesByIds/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/addDevicesByIds/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"addDevicesByIds",
 								"taskJobId",
@@ -2958,16 +2533,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/deleteDevicesByIds/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/deleteDevicesByIds/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"deleteDevicesByIds",
 								"taskJobId",
@@ -2992,16 +2562,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/addDevicesByIps/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/addDevicesByIps/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"addDevicesByIps",
 								"taskJobId",
@@ -3026,16 +2591,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/deleteDevicesByIps/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/deleteDevicesByIps/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"deleteDevicesByIps",
 								"taskJobId",
@@ -3051,16 +2611,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/getDevices/taskJobId/49",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/getDevices/taskJobId/49",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"getDevices",
 								"taskJobId",
@@ -3085,16 +2640,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/jobs/run",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/jobs/run",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"jobs",
 								"run"
 							]
@@ -3108,16 +2658,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/queue/size",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/queue/size",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"queue",
 								"size"
 							]
@@ -3131,16 +2676,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/tasks/queue/2/3?onlyActiveSessions=false&modifyDate=20240131",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}tasks/queue/2/3?onlyActiveSessions=false&modifyDate=20240131",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}tasks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"tasks",
 								"queue",
 								"2",
 								"3"
@@ -3170,16 +2710,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/intelliCheckStatus/{filterType}?filterType=byType",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/intelliCheckStatus/{filterType}?filterType=byType",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"intelliCheckStatus",
 								"{filterType}"
 							],
@@ -3199,16 +2734,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/intelliCheckStatus/{filterType}?filterType=bySite",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/intelliCheckStatus/{filterType}?filterType=bySite",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"intelliCheckStatus",
 								"{filterType}"
 							],
@@ -3228,16 +2758,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/intelliCheckStatus/{filterType}?filterType=byGroup",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/intelliCheckStatus/{filterType}?filterType=byGroup",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"intelliCheckStatus",
 								"{filterType}"
 							],
@@ -3257,16 +2782,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/getAllIntelliChecksJobs",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}ntelliChecks/jobs/getAllIntelliChecksJobs",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}ntelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"getAllIntelliChecksJobs"
 							]
@@ -3289,16 +2809,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/addDeviceGroupsByIds/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/addDeviceGroupsByIds/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"addDeviceGroupsByIds",
 								"jobId",
@@ -3323,16 +2838,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/removeDeviceGroups/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/removeDeviceGroups/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"removeDeviceGroups",
 								"jobId",
@@ -3357,16 +2867,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/addDeviceGroupsByNames/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/addDeviceGroupsByNames/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"addDeviceGroupsByNames",
 								"jobId",
@@ -3391,16 +2896,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/removeDeviceGroupsByGroupNames/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/removeDeviceGroupsByGroupNames/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"removeDeviceGroupsByGroupNames",
 								"jobId",
@@ -3425,16 +2925,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/removeDevicesByExternalIds/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/removeDevicesByExternalIds/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"removeDevicesByExternalIds",
 								"jobId",
@@ -3459,16 +2954,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/addDevicesByExternalIds/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/addDevicesByExternalIds/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"addDevicesByExternalIds",
 								"jobId",
@@ -3493,16 +2983,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/removeDevicesByIds/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/removeDevicesByIds/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"removeDevicesByIds",
 								"jobId",
@@ -3527,16 +3012,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/addDevicesByIds/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/addDevicesByIds/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"addDevicesByIds",
 								"jobId",
@@ -3561,16 +3041,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/removeDevicesByIps/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/removeDevicesByIps/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"removeDevicesByIps",
 								"jobId",
@@ -3595,16 +3070,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/addDevicesByIps/jobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/addDevicesByIps/jobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"addDevicesByIps",
 								"jobId",
@@ -3620,16 +3090,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/bySite/0",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/bySite/0",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"bySite",
 								"0"
@@ -3644,16 +3109,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/getAllScheduledJobs",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/getAllScheduledJobs",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"getAllScheduledJobs"
 							]
@@ -3667,16 +3127,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/getDevices/intellichecksJobId/22",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/getDevices/intellichecksJobId/22",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"getDevices",
 								"intellichecksJobId",
@@ -3692,16 +3147,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/run/23",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/run/23",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"run",
 								"23"
@@ -3725,16 +3175,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/intelliChecks/jobs/run",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}intelliChecks/jobs/run",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}intelliChecks"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"intelliChecks",
 								"jobs",
 								"run"
 							]
@@ -3753,16 +3198,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/users",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}users",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"users"
+								"{{path_to_endpoint}}users"
 							]
 						}
 					},
@@ -3774,16 +3212,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/user/51",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}user/51",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}user"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"user",
 								"51"
 							]
 						}
@@ -3805,16 +3238,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/user/getByUserName",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}user/getByUserName",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}user"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"user",
 								"getByUserName"
 							]
 						}
@@ -3836,16 +3264,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/user/add",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}user/add",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}user"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"user",
 								"add"
 							]
 						}
@@ -3867,16 +3290,11 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/user/edit",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}user/edit",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}user"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"user",
 								"edit"
 							]
 						}
@@ -3889,16 +3307,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/users/size",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}users/size",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}users"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"users",
 								"size"
 							]
 						}
@@ -3911,16 +3324,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/users/getAllUsersBySiteId/3",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}users/getAllUsersBySiteId/3",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}users"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"users",
 								"getAllUsersBySiteId",
 								"3"
 							]
@@ -3943,16 +3351,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/users",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}users",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"users"
+								"{{path_to_endpoint}}users"
 							]
 						}
 					},
@@ -3969,16 +3370,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/notifications",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}notifications",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"notifications"
+								"{{path_to_endpoint}}notifications"
 							]
 						}
 					},
@@ -3990,16 +3384,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/notification/41",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}notification/41",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}notification"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"notification",
 								"41"
 							]
 						}
@@ -4021,16 +3410,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/notification",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}notification",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"notification"
+								"{{path_to_endpoint}}notification"
 							]
 						}
 					},
@@ -4051,16 +3433,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/notification",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}notification",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"notification"
+								"{{path_to_endpoint}}notification"
 							]
 						}
 					},
@@ -4072,16 +3447,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/notification/9",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}notification/9",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}notification"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"notification",
 								"9"
 							]
 						}
@@ -4094,16 +3464,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/notificationsBySite/{siteId}?siteId=0",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}notificationsBySite/{siteId}?siteId=0",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}notificationsBySite"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"notificationsBySite",
 								"{siteId}"
 							],
 							"query": [
@@ -4127,16 +3492,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/schedules",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}schedules",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"schedules"
+								"{{path_to_endpoint}}schedules"
 							]
 						}
 					},
@@ -4148,16 +3506,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/schedule/24",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}schedule/24",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}schedule"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"schedule",
 								"24"
 							]
 						}
@@ -4179,16 +3532,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/schedule",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}schedule",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"schedule"
+								"{{path_to_endpoint}}schedule"
 							]
 						}
 					},
@@ -4209,16 +3555,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/schedule",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}schedule",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"schedule"
+								"{{path_to_endpoint}}schedule"
 							]
 						}
 					},
@@ -4230,16 +3569,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/schedule/24",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}schedule/24",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}schedule"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"schedule",
 								"24"
 							]
 						}
@@ -4257,16 +3591,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/reports/size",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}reports/size",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}reports"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"reports",
 								"size"
 							]
 						}
@@ -4279,15 +3608,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/reports",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}api/reports",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}api"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
 								"reports"
 							]
 						}
@@ -4300,17 +3625,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/report/45",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}report/44",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}report"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"report",
-								"45"
+								"44"
 							]
 						}
 					},
@@ -4331,16 +3651,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/report",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}report",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"report"
+								"{{path_to_endpoint}}report"
 							]
 						}
 					},
@@ -4361,16 +3674,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/report",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}report",
 							"host": [
-								"{{bb_server}}"
-							],
-							"path": [
-								"rest",
-								"data",
-								"api",
-								"report"
+								"{{path_to_endpoint}}report"
 							]
 						}
 					},
@@ -4382,16 +3688,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/report/44",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}report/44",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}report"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"report",
 								"44"
 							]
 						}
@@ -4420,16 +3721,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/queue/size",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/queue/size",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"queue",
 								"size"
 							]
@@ -4454,16 +3750,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/system/queue/backup/realtime",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/system/queue/backup/realtime",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"system",
 								"queue",
 								"backup",
@@ -4490,16 +3781,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/system/queue/intellichecks/realtime",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/system/queue/intellichecks/realtime",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"system",
 								"queue",
 								"intellichecks",
@@ -4526,16 +3812,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/dashboard/system/queue/task/realtime",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}dashboard/system/queue/task/realtime",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}dashboard"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"dashboard",
 								"system",
 								"queue",
 								"task",
@@ -4551,16 +3832,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/queue/3/4/IP/true?onlyActiveSessions=false&modifyDate=20240115",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/queue/3/4/IP/true?onlyActiveSessions=false&modifyDate=20240115",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"queue",
 								"3",
 								"4",
@@ -4603,17 +3879,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/token/api/auditing/report/full",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}auditing/report/full",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}auditing"
 							],
 							"path": [
-								"rest",
-								"data",
-								"token",
-								"api",
-								"auditing",
 								"report",
 								"full"
 							]
@@ -4627,16 +3897,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/downloadTerminalLog/link/257406",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/downloadTerminalLog/link/257406",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"downloadTerminalLog",
 								"link",
 								"257406"
@@ -4651,16 +3916,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/backups/downloadTerminalLog/257406",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}backups/downloadTerminalLog/257406",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}backups"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"backups",
 								"downloadTerminalLog",
 								"257406"
 							]
@@ -4679,16 +3939,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/integrator/getAllOptions",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}integrator/getAllOptions",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}integrator"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"integrator",
 								"getAllOptions"
 							]
 						}
@@ -4701,16 +3956,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/integrator/get/getVendorIdByName/Cisco",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}integrator/get/getVendorIdByName/Cisco",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}integrator"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"integrator",
 								"get",
 								"getVendorIdByName",
 								"Cisco"
@@ -4725,16 +3975,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/integrator/getAllProducts",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}integrator/getAllProducts",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}integrator"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"integrator",
 								"getAllProducts"
 							]
 						}
@@ -4747,16 +3992,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/integrator/getAllVendors",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}integrator/getAllVendors",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}integrator"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"integrator",
 								"getAllVendors"
 							]
 						}
@@ -4769,16 +4009,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/api/integrator/getAllVersions",
-							"protocol": "https",
+							"raw": "{{path_to_endpoint}}integrator/getAllVersions",
 							"host": [
-								"{{bb_server}}"
+								"{{path_to_endpoint}}integrator"
 							],
 							"path": [
-								"rest",
-								"data",
-								"api",
-								"integrator",
 								"getAllVersions"
 							]
 						}
@@ -4793,7 +4028,7 @@
 		"apikey": [
 			{
 				"key": "value",
-				"value": "<Insert API Key here>",
+				"value": "",
 				"type": "string"
 			},
 			{
@@ -4826,7 +4061,11 @@
 	"variable": [
 		{
 			"key": "bb_server",
-			"value": "<insert BackBox Server here>"
+			"value": "<server name>"
+		},
+		{
+			"key": "path_to_endpoint",
+			"value": "https://{{bb_server}}/rest/data/token/api/"
 		}
 	]
 }
