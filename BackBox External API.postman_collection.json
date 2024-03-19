@@ -34,7 +34,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://{{bb_server}}/rest/data/token/api/login?username=apiuser&password=!h@RTa3.14",
+							"raw": "https://{{bb_server}}/rest/data/token/api/login?username=&password=",
 							"protocol": "https",
 							"host": [
 								"{{bb_server}}"
@@ -49,11 +49,11 @@
 							"query": [
 								{
 									"key": "username",
-									"value": "apiuser"
+									"value": ""
 								},
 								{
 									"key": "password",
-									"value": "!h@RTa3.14"
+									"value": ""
 								}
 							]
 						}
@@ -124,7 +124,7 @@
 								},
 								{
 									"key": "value",
-									"value": "94ZfqQgvSxgfZyYUyEp5yb52vyrza7WW3XgHIVpQpkU3CzmYwWLEyg",
+									"value": "",
 									"type": "string"
 								}
 							]
